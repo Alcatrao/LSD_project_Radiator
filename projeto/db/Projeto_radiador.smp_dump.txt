@@ -1,0 +1,7 @@
+
+State Machine - |projeto_radiador|Relogio_SM:relogio|PS
+Name PS.A_Hour PS.A_Min PS.Normal PS.A_Days 
+PS.A_Days 0 0 0 0 
+PS.Normal 0 0 1 1 
+PS.A_Min 0 1 0 1 
+PS.A_Hour 1 0 0 1 

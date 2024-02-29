@@ -1,0 +1,187 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.numeric_std.all;
+
+entity ajustador is
+	port(	clk		: in  std_logic;
+			acerto	: in  std_logic;
+			mais		: in  std_logic;		
+			menos		: in	std_logic;
+	
+			-- os inputs e outputs abaixo desta linha são enviados para e recebidos do relógio
+			in_minutos : in std_logic_vector(5 downto 0);
+			in_horas :	 in std_logic_vector(4 downto 0);
+			in_dias :	 in std_logic_vector(2 downto 0);
+			
+			out_minutos : out std_logic_vector(5 downto 0);
+			out_horas :	 out std_logic_vector(4 downto 0);
+			out_dias :	 out std_logic_vector(2 downto 0);
+			
+			enable : out std_logic);
+			
+			
+end ajustador;
+
+architecture Behavioral of ajustador is
+
+
+	type TState is (t_normal, t_dias, t_horas, t_minutos);
+	signal s_currentState, s_nextState : TState;
+	signal minutos : 	unsigned std_logic_vector(5 downto 0);
+	signal horas :	 	unsigned std_logic_vector(4 downto 0);
+	signal dias :	 	unsigned std_logic_vector(2 downto 0);
+	
+	
+	
+
+begin
+	sync_proc : process(clk)
+	begin
+		if (rising_edge(clk)) then
+			s_currentState <= s_nextState;
+		end if;
+	end process;
+
+	comb_proc : process(s_currentState, acerto, mais, menos)
+	begin
+	
+	minutos <= unsigned(in_minutos);
+	horas <= unsigned(in_horas);
+	dias <= unsigned(in_dias);
+	
+	
+		case (s_currentState) is
+		when t_normal =>
+			enable <= '1';
+			
+			if (acerto = '1') then
+				s_nextState <= t_dias;
+			else
+				s_nextState <= t_normal;
+			end if;
+			
+			
+
+		when t_dias =>
+		
+			enable <= '0';
+			
+			if (acerto = '1') then
+				s_nextState <= t_horas;
+				
+			elsif (mais = '1') then
+			
+				dias <= dias+1;
+				if (dias < (to_unsigned(0, 3))) or (dias > (to_unsigned(7, 3))) then
+					dias <= "000";
+				end if;
+				
+				s_nextState <= t_dias;
+				
+			elsif (menos = '1') then
+			
+				dias <= dias-1;
+				if (dias < (to_unsigned(0, 3))) or (dias > (to_unsigned(7, 3))) then
+					dias <= "000";
+				end if;
+				
+				s_nextState <= t_dias;
+				
+			
+			else
+			
+				s_nextState <= t_dias;
+				
+			end if;
+			
+			
+			
+			
+			
+			
+		when t_horas =>
+		
+			enable <= '0';
+			
+			if (acerto = '1') then
+				s_nextState <= t_minutos;
+				
+			elsif (mais = '1') then
+			
+				horas <= horas+1;
+				if (horas < (to_unsigned(0, 5))) or (horas > (to_unsigned(23, 5))) then
+					horas <= "00000";
+				end if;
+				
+				s_nextState <= t_dias;
+				
+			elsif (menos = '1') then
+			
+				horas <= horas-1;
+				if (horas < (to_unsigned(0, 5))) or (horas > (to_unsigned(23, 5))) then
+					horas <= "00000";
+				end if;
+				
+				s_nextState <= t_horas;
+				
+			
+			else
+			
+				s_nextState <= t_horas;
+				
+			end if;
+			
+			
+			
+			
+			
+			
+			when t_minutos =>
+		
+			enable <= '0';
+			
+			if (acerto = '1') then
+				s_nextState <= t_normal;
+				
+			elsif (mais = '1') then
+			
+				minutos <= minutos+1;
+				if (minutos < (to_unsigned(0, 6))) or (minutos > (to_unsigned(59, 6))) then
+					minutos <= "000000";
+				end if;
+				
+				s_nextState <= t_minutos;
+				
+			elsif (menos = '1') then
+			
+				minutos <= minutos-1;
+				if (minutos < (to_unsigned(0, 6))) or (minutos > (to_unsigned(59, 6))) then
+					minutos <= "000000";
+				end if;
+				
+				s_nextState <= t_minutos;
+				
+			
+			else
+			
+				s_nextState <= t_minutos;
+				
+			end if;
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		end case;
+		
+		out_minutos <= std_logic_vector(minutos);
+		out_horas <= std_logic_vector(horas);
+		out_dias <= std_logic_vector(dias);
+
+	end process;
+
+end Behavioral;

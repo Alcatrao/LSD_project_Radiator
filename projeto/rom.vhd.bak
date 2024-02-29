@@ -1,0 +1,93 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity ROM is
+  port ( address : in std_logic_vector(5 downto 0); --dado pelo relógio, a partir da multiplicação da hora por 2 + (1 se minutos >= 30; 0 se else)
+         data : out std_logic_vector(2 downto 0) ); --dado ao mux4_1, que a partir do resultado, seleciona a temperatura correta
+end entity ROM;
+
+architecture behavioral of ROM is
+	signal s_address : natural := 0;
+  type mem is array ( 0 to 2**6 - 16) of std_logic_vector(2 downto 0);
+  constant my_Rom : mem := (
+    0  => "001",
+    1  => "001",
+    2  => "001",
+    3  => "001",
+    4  => "001",
+    5  => "001",
+    6  => "001",
+    7  => "001",
+    8  => "001",
+    9  => "001",
+    10 => "010",
+    11 => "010",
+    12 => "010",
+    13 => "010",
+    14 => "100",
+	 
+	 15  => "100",
+    16  => "100",
+    17  => "100",
+    18  => "100",
+    19  => "100",
+    20  => "100",
+    21  => "100",
+    22  => "100",
+    23  => "100",
+    24  => "100",
+	 25  => "100",
+    26  => "100",
+    27  => "100",
+    28  => "100",
+    29  => "100",
+    30  => "100",
+    31  => "100",
+    32  => "100",
+    33  => "100",
+    34  => "100",
+	 35  => "100",
+	 
+    36  => "010",
+    37  => "010",
+    38  => "010",
+    39  => "010",
+	 
+    40  => "001",
+    41  => "001",
+    42  => "001",
+    43  => "001",
+    44  => "001",
+	 45  => "001",
+    46  => "001",
+    47  => "001");
+begin
+   process (address)
+   begin
+		s_address <= to_integer(unsigned(address));
+		if (s_address >= 0) and (s_address < 48) then
+			data <= my_rom(s_address);
+		else
+			data <= "001";
+		end if;
+--     case address is
+--       when "0000" => data <= my_rom(0);
+--       when "0001" => data <= my_rom(1);
+--       when "0010" => data <= my_rom(2);
+--       when "0011" => data <= my_rom(3);
+--       when "0100" => data <= my_rom(4);
+--       when "0101" => data <= my_rom(5);
+--       when "0110" => data <= my_rom(6);
+--       when "0111" => data <= my_rom(7);
+--       when "1000" => data <= my_rom(8);
+--       when "1001" => data <= my_rom(9);
+--       when "1010" => data <= my_rom(10);
+--       when "1011" => data <= my_rom(11);
+--       when "1100" => data <= my_rom(12);
+--       when "1101" => data <= my_rom(13);
+--       when "1110" => data <= my_rom(14);
+--       when "1111" => data <= my_rom(15);
+--       when others => data <= "00000000";
+--	 end case;
+  end process;
+end architecture behavioral;

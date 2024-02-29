@@ -1,0 +1,217 @@
+library IEEE; 
+use IEEE.STD_LOGIC_1164.all; 
+
+-- Entidade sem portos 
+entity simulador_TB is 
+end simulador_TB; 
+
+architecture Stimulus of simulador_TB is 
+
+	-- Sinais para ligar às entradas da UUT 
+	signal s_clk 				: std_logic;
+	signal s_clk_en 			: std_logic;
+	signal s_out_radiador 	: std_logic;
+ 
+	-- Sinal para ligar às saídas da UUT 
+	signal s_temperatura : std_logic_vector(8 downto 0);
+	
+begin 
+
+	-- Instanciação da Unit Under Test (UUT) 
+	uut: entity work.simulador(Behavioral) 
+	
+	port map(	clk => CLOCK_50,
+					clk_en => clkTemp,
+					out_radiador => on_off_radiador,
+					temperatura => Tamb); 
+ 
+	--Process stim 
+	stim_proc : process 
+	begin
+	
+	wait for 10 ns; -- test mode normal
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; -- test mode min
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_ajustar <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_ajustar <= '0';
+	s_mais <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_mais <= '0';
+	s_menos <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_menos <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; -- test mode hour
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_ajustar <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_ajustar <= '0';
+	s_mais <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_mais <= '0';
+	s_menos <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_menos <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; -- test mode day
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_ajustar <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_ajustar <= '0';
+	s_mais <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_mais <= '0';
+	s_menos <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_menos <= '0';
+	
+	wait for 10 ns; -- return to mode normal
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_ajustar <= '1';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '0';
+	s_clk_en <= '0';
+	
+	wait for 10 ns; 
+	
+	s_clk_glob <= '1';
+	s_clk_en <= '1';
+	
+	s_ajustar <= '0';
+ 
+	end process; 
+end Stimulus;

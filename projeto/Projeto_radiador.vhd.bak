@@ -1,0 +1,46 @@
+library IEEE;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+
+entity ShiftRegister_Demo is
+	--generic (size : positive := 8;
+	--		divFactor : positive :=50_000_000);
+	
+	port(	CLOCK_50 : in std_logic;	--clk
+			SW : in std_logic_vector(1 downto 0); -- acel
+			KEY : in std_logic_vector(2 downto 0); --S, +, -
+			LEDR : out std_logic_vector(0 downto 0);	-- on/off; output radiador
+			LEDG : out std_logic_vector(7 downto 7);	-- output sol
+			LEDG : out std_logic_vector(4 downto 4);	-- output lua
+			LEDG : out std_logic_vector(0 downto 0);	-- output gelo
+			HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7  : out std_logic_vector(6 downto 0);	--displays (0 a 4 para tempo; 5 a 7 para temperatura)
+end ShiftRegister_Demo;
+
+
+architecture shell of ShiftRegister_Demo is
+	signal clkTemp : std_logic;
+	begin
+	
+
+	
+		clock : entity work.pulse_clk_N(Behavioral)
+		
+						 --generic map(divFactor => divFactor)
+						 
+										port map(clkIn => CLOCK_50,
+													acel => SW(1 downto 0),
+													clkOut => clkTemp);
+													
+													
+													
+								
+		shiftRegister : entity work.ajustador(Behavioral)
+						 
+										port map(clk => clkTemp,
+													sin => SW(0),
+													dataOut => LEDR(size-1 downto 0));
+													
+		
+													
+end shell;

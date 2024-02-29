@@ -1,0 +1,142 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
+
+entity Relogio is
+
+	port(	clk_glob	: in std_logic;
+			clk_en	: in std_logic;
+			
+			ajustar	: in std_logic;
+			mais		: in std_logic;
+			menos		: in std_logic;
+			
+			--output para a ROM
+			out_index : out std_logic_vector(5 downto 0);
+			sel		: out std_logic;
+			
+			days		: out std_logic_vector( downto 0);
+			hours		: out std_logic_vector( downto 0);
+			minutes	: out std_logic_vector( downto 0));
+
+end Relogio;
+
+architecture Behavioral of Relogio is
+
+	signal s_minutos 	: unsigned(5 downto 0);
+	signal s_horas 	: unsigned(4 downto 0);
+	signal s_dias 		: unsigned(2 downto 0);
+	
+	signal s_index 	: natural := 0;
+	signal s_index_meia_hora : natural := 0;
+	
+	signal s_blink		: std_logic;
+	signal s_normal	: std_logic;
+	
+	type State is (Normal, A_Min, A_Hour, A_Days);
+	
+	signal PS, NS	: State;
+
+begin
+
+	entity work.ClockDiv(Behavioral)
+	
+				port map(	clk_in => clk_glob,
+								freq_out => s_blink);
+
+	sync_proc	:
+	
+	process(clk_glob)
+	begin
+	
+		if rising_edge(clk_glob) then
+		
+			if clk_en = '1' and s_normal = '1' then
+			
+				s_minutos <= s_minutos + 1;
+			
+			end if;
+			
+			if ajustar = '1' then
+			
+				PS <= NS;
+				
+			else
+		
+				PS <= PS;
+			
+			end if;	
+		
+		end if;
+	end process;
+	
+	comb_proc	:
+	
+	process(PS)
+	begin
+	
+		case PS is
+		
+			when Normal => 
+			
+				s_normal <= '1';
+				
+			when A_Min =>
+			
+				s_normal <= '0';
+				
+				if mais = '1' then 
+				
+					s_minutos <= s_minutos + 1;
+				
+				elsif menos = '0' then
+				
+					s_minutos <= s_minutos - 1;
+				
+				else 
+				
+					s_minutos <= s_minutos;
+				
+				end if;
+		
+			when A_Hour =>
+			
+				s_normal <= '0';
+				
+				if mais = '1' then 
+				
+					s_horas <= s_horas + 1;
+				
+				elsif menos = '0' then
+				
+					s_horas <= s_horas - 1;
+				
+				else 
+				
+					s_horas <= s_horas;
+				
+				end if;
+			
+			when A_Days =>
+			
+				s_normal <= '0';
+				
+				if mais = '1' then 
+				
+					s_dias <= s_dias + 1;
+				
+				elsif menos = '0' then
+				
+					s_dias <= s_dias - 1;
+				
+				else 
+				
+					s_dias <= s_dias;
+				
+				end if;
+				
+		end case;		
+	
+	end process;
+	
+end Behavioral;

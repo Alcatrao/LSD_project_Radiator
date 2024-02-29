@@ -1,0 +1,23 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
+
+entity ClockDiv is
+
+	generic(	N : unsigned := 50_000_000);
+
+	port(	clk_in	: in std_logic;
+			freq_out	: out std_logic);
+
+end ClockDiv;
+
+architecture Behavioral of ClockDiv is
+
+	signal count	: unsigned(32 downto 0);
+	signal half		: unsigned(32 downto 0);
+
+begin
+
+	
+
+end Behavioral;

@@ -1,0 +1,50 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+
+entity ControlUnit is
+	port(	clk		: in  std_logic;
+			Tref		: in 	std_logic_vector(8 downto 0); --9 bits para representar uma temperatura entre 0 e 51ºC com 1 casa decimal
+			Tamb		: in std_logic_vector(8 downto 0);
+			on_off	: out std_logic);
+end ControlUnit;
+
+architecture Behavioral of ControlUnit is
+
+	type TState is (t_ON, t_OFF);
+	signal s_currentState, s_nextState : TState;
+	signal s_histerese : unsigned(8 downto 0) := 1; -- 0.1 ºC
+	signal s_Tamb : unsigned(8 downto 0);
+	signal s_Tref : unsigned(8 downto 0);
+
+begin
+	sync_proc : process(clk)
+	begin
+		if (rising_edge(clk)) then
+			s_Tamb <= unsigned(Tamb);
+			s_Tref <= unsigned(Tref);		--a cada ciclo do clock, atualizar os valores de temperatura recebidos para efeitos de comparação
+		end if;
+	end process;
+
+	comb_proc : process(s_currentState, Tref, Tamb)
+	begin
+		case (s_currentState) is
+		when t_ON =>
+			if (Tamb >= Tref + histerese/2) then
+				s_nextState <= t_OFF;
+			else
+				s_nextState <= t_ON;
+			end if;
+
+		when t_OFF =>
+			if (Tamb <= Tref - histerese/2) then
+				s_nextState <= t_ON;
+			else
+				s_nextState <= t_OFF;
+			end if;
+			
+			
+		end case;
+
+	end process;
+
+end Behavioral;

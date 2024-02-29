@@ -1,0 +1,54 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
+
+entity CntBCDUp4 is
+	port(clk		: in  std_logic;
+		  enable	: in  std_logic;
+		  minutos : out std_logic_vector(5 downto 0);
+		  horas : out std_logic_vector(4 downto 0);
+		  dias : out std_logic_vector(2 downto 0);
+end CntBCDUp4;
+
+architecture Behavioral of CntBCDUp4 is
+
+	signal s_count : unsigned(15 downto 0);
+	signal s_minutes : unsigned(5 downto 0);
+	signal s_horas : unsigned(4 downto 0);
+	signal s_dias : unsigned(2 downto 0);
+	
+
+begin
+	count_proc : process(clk)
+	begin
+		if (rising_edge(clk)) then
+			if ((enable = '1') then
+			
+				if (s_minutes = X"59") then
+					s_minutes <= "0";
+					s_horas <= s_horas + 1; 
+				else
+					s_minutes <= s_minutes + 1;
+				end if;
+					
+				if (s_horas = X"23") then
+					s_horas <= X"0";
+					s_dias <= s_dias + 1;
+				else
+					s_horas <= s_horas + 1;
+				end if;
+					
+					
+				if (s_dias <= X"6") then
+					s_dias <= X"0";
+				else
+					s_dias <= s_dias + 1;
+				end if;
+			
+		
+	end process;
+
+	minutos <= std_logic_vector(s_minutes);
+	horas <= std_logic_vector(s_horas);
+	dias <= std_logic_vector(s_dias);
+end Behavioral;

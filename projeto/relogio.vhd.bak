@@ -1,0 +1,97 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
+
+entity relogio is
+	port(clk		: in  std_logic;
+		  enable	: in  std_logic;
+		  --segundos : out std_logic_vector(5 downto 0);
+		  minutos : out std_logic_vector(5 downto 0);
+		  horas : out std_logic_vector(4 downto 0);
+		  dias : out std_logic_vector(2 downto 0));
+end relogio;
+
+architecture Behavioral of relogio is
+
+	--signal s_segundos : unsigned(5 downto 0);
+	signal s_minutes : unsigned(5 downto 0);
+	signal s_horas : unsigned(4 downto 0);
+	signal s_dias : unsigned(2 downto 0);
+	
+
+begin
+	count_proc : process(clk)
+	begin
+		if (rising_edge(clk)) then
+			if (enable = '1') then
+			
+--				--if (s_segundos = "59") then
+--				--	s_segundos <= "0";
+--					
+--					if (s_minutes = "111011") then		-- comparar com 59 em binário
+--						s_minutes <= "000000";
+--						
+--							if (s_horas = "10111") then	--comparar com 23 em binário
+--								s_horas <= "00000";
+--								
+--									if (s_dias = "110") then	--comparar com 6 em binário
+--										s_dias <= "000";
+--									else
+--										s_dias <= s_dias + 1;
+--									end if;
+--									
+--							else
+--								s_horas <= s_horas + 1;
+--							end if;
+--							
+--					else
+--						s_minutes <= s_minutes + 1;
+--					end if;
+					
+				--else
+				--	s_segundos <= s_segundos + 1;
+				--end if;
+									
+					
+					
+					
+					
+					
+				if (s_dias <= "110" and s_horas = "10111" and s_minutes= "111011") then	--se for 23h:59m (conseguidos ciclo de clock anterior), então neste ciclo, o dia aumenta  
+					s_dias <= "000";
+				elsif (s_horas = "10111" and s_minutes = "111011") then
+					s_dias <= s_dias + 1;
+				end if;
+	
+			
+				
+					
+				if (s_horas = "10111" and s_minutes = "111011") then
+					s_horas <= "00000";
+					--s_dias <= s_dias + 1;
+				elsif (s_minutes = "111011") then	--quando o pulso (de 1 em 1 minuto) é ativado, há um incremento nos minutos de 0 para 1. Edit; esta tentativa de fazer primeiro os minutos e depois as horas e assim, estava a fazer que logo no 1º minuto, a hora alterasse, possivelmente porque em VHDL, as variáveis só assumem os novos valores no próximo ciclo
+					s_horas <= s_horas + 1;
+				end if;
+				
+				
+				
+				
+				if (s_minutes = "111011") then
+					s_minutes <= "000000";
+					--s_horas <= s_horas + 1; 
+				else
+					s_minutes <= s_minutes + 1;
+				end if;
+				
+					
+					
+				
+			
+			end if;
+		end if;
+	end process;
+
+	minutos <= std_logic_vector(s_minutes);
+	horas <= std_logic_vector(s_horas);
+	dias <= std_logic_vector(s_dias);
+end Behavioral;

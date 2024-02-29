@@ -1,0 +1,32 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
+
+
+entity Pulse_Gen is
+
+	 port(	clkIn 	: in std_logic;
+				acel 		: in std_logic_vector(1 downto 0);
+				clkOut 	: out std_logic );
+			
+end Pulse_Gen;
+
+architecture Behavioral of Pulse_Gen is
+
+begin
+	
+	process(clkIn)
+	begin
+	
+		if rising_edge(clkIn) then
+		
+		
+		
+		
+		
+		
+		end if;
+	
+	end process;
+
+end Behavioral;
